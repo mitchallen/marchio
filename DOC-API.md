@@ -51,9 +51,9 @@ Health check
 ## marchio-factory
 Factory module
 
-<a name="module_marchio-factory.create"></a>
+<a name="module_marchio-factory.Datastore"></a>
 
-### marchio-factory.create(spec) ⇒ <code>Promise</code>
+### marchio-factory.Datastore(spec) ⇒ <code>Promise</code>
 Factory method 
 It takes one spec parameter that must be an object with named parameters
 

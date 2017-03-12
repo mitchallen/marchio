@@ -12,11 +12,17 @@
 
 var request = require('supertest'),
     should = require('should'),
-    modulePath = "../modules/index";
+    modulePath = "../modules/index",
+    GOOGLE_TEST_PROJECT = process.env.MARCHIO_TEST_GOOGLE_PROJECT;
 
 describe('module factory smoke test', () => {
 
     var _factory = null;
+
+    var _testModel = {
+        name: "smoke",
+        fields: []
+    };
 
     before( done => {
         // Call before all tests
@@ -45,20 +51,41 @@ describe('module factory smoke test', () => {
         done();
     });
 
-    it('create method with no spec should return object', done => {
-        _factory.create()
+    it('Datastore method with no spec should return error', done => {
+        _factory.Datastore({})
+        .then(function(obj){
+            should.exist(obj);
+            done(new Error("ERROR: object should not exist"));
+        })
+        .catch( function(err) { 
+            // console.error(err); 
+            console.error(err.message);
+            done();  // to pass on err, remove err (done() - no arguments)
+        });
+    });
+
+    it('Datastore method with valid properties should return object', done => {
+        // console.log(`GOOGLE_TEST_PROJECT: ${GOOGLE_TEST_PROJECT}`);
+        _factory.Datastore({
+            projectId: GOOGLE_TEST_PROJECT,
+            model: _testModel
+        })
         .then(function(obj){
             should.exist(obj);
             done();
         })
         .catch( function(err) { 
-            console.error(err); 
+            // console.error(err); 
+            console.error(err.message);
             done(err);  // to pass on err, remove err (done() - no arguments)
         });
     });
 
-    it('health method should return ok', done => {
-        _factory.create({})
+    it('Datastore health method should return ok', done => {
+        _factory.Datastore({
+            projectId: GOOGLE_TEST_PROJECT,
+            model: _testModel
+        })
         .then(function(obj) {
             return obj.health();
         })
@@ -67,7 +94,8 @@ describe('module factory smoke test', () => {
             done();
         })
         .catch( function(err) { 
-            console.error(err);
+            // console.error(err); 
+            console.error(err.message);
             done(err); 
         });
     });
