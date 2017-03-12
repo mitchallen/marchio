@@ -1,6 +1,6 @@
 marchio
 ==
-REST api 
+REST to database mapper 
 --
 
 <p align="left">
@@ -29,6 +29,8 @@ REST api
 * * *
 
 ## Usage
+
+This is a work in progress.
 
 ## Testing
 
