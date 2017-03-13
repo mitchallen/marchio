@@ -43,109 +43,109 @@ var buildRecord = function( fields, req ) {
 
 module.exports.create = ( spec ) => {
 
-    spec = spec || {};
+    return new Promise((resolve, reject) => {
 
-    var model = spec.model,
-        projectId = spec.projectId,
-        use = spec.use || [];
+        spec = spec || {};
 
-    if( ! model ) {
-        console.error("### ERROR: create model must be defined");
-        return null;
-    }
+        var model = spec.model,
+            projectId = spec.projectId,
+            middleware = spec.use;
 
-    if( ! model.name ) {
-        console.error("### ERROR: create model.name must be defined");
-        return null;
-    }
-
-    if( ! projectId ) {
-        console.error("### ERROR: create projectId must be defined");
-        return null;
-    }
-
-    model.fields = model.fields || {};
-
-    const ds = datastore({
-        projectId: projectId
-    });
-
-    var saveDB = function(req, res, next) {
-
-        var eMsg = '';
-
-        if( req.params.model !== model.name ) {
-            eMsg = `### ERROR: '${req.params.model}'' is not a valid database model`;
-            console.error(eMsg);
-            res
-                .status(404)
-                .json({ error: eMsg });
-            return;
+        if( ! model ) {
+            reject( new Error(".create: model must be defined"));
         }
 
-        var record = buildRecord( model.fields, req );
-
-        if( ! record ) {
-            eMsg = `### ERROR: request fields failed validation`;
-            console.error(eMsg);
-            res
-                .status(404)
-                .json({ error: eMsg });
-            return;
+        if( ! model.name ) {
+            reject ( new Error(".create: model.name must be defined"));
         }
 
-        // console.log(record);
+        if( ! projectId ) {
+            reject( new Error(".create: projectId must be defined"));
+        }
 
-        // console.log("MODEL NAME: ", model.name );
+        model.fields = model.fields || {};
 
-        // For a PUT operation:
-        // var dbId = parseInt(id,10);
-        // var key = datastore.key( [ model.name, dbId ] );
-
-        var key = ds.key( model.name );
-        var entity = {
-          key: key,
-          data: record
-        };
-
-        ds.save(entity).then(function(data) {
-            // var apiResponse = data[0];
-
-            // console.log("=== SAVE DATA ===");
-            // console.log(JSON.stringify(data,null,2));
-            // console.log("^^^ SAVE DATA ^^^"); 
-
-            // console.log(key.path); // [ 'Company', 5669468231434240 ]
-            // console.log(key.namespace); // undefined
-
-            entity.data._id = key.id;
-
-            var record = entity.data || entity;
-
-            res
-                .location("/" + key.path.join('/') )  // .location("/" + model + "/" + doc._id)
-                .status(201)    // Created
-                .json(record);
-
-            next();
-
-        }).catch( function(err) { 
-            console.error(err); 
-            if(err) {
-                res
-                    .status(500)
-                    .json(err);
-            } 
+        const ds = datastore({
+            projectId: projectId
         });
 
-    };
+        var saveDB = function(req, res, next) {
 
-    // Automatically parse request body as JSON
-    router.use(bodyParser.json());
+            var eMsg = '';
 
-    router.use(use);
-    
-    router.post( '/:model', saveDB );
+            if( req.params.model !== model.name ) {
+                eMsg = `### ERROR: '${req.params.model}'' is not a valid database model`;
+                console.error(eMsg);
+                res
+                    .status(404)
+                    .json({ error: eMsg });
+                return;
+            }
 
-    return router;
+            var record = buildRecord( model.fields, req );
+
+            if( ! record ) {
+                eMsg = `### ERROR: request fields failed validation`;
+                console.error(eMsg);
+                res
+                    .status(404)
+                    .json({ error: eMsg });
+                return;
+            }
+
+            // console.log(record);
+
+            // console.log("MODEL NAME: ", model.name );
+
+            // For a PUT operation:
+            // var dbId = parseInt(id,10);
+            // var key = datastore.key( [ model.name, dbId ] );
+
+            var key = ds.key( model.name );
+            var entity = {
+              key: key,
+              data: record
+            };
+
+            ds.save(entity).then(function(data) {
+                // var apiResponse = data[0];
+
+                // console.log("=== SAVE DATA ===");
+                // console.log(JSON.stringify(data,null,2));
+                // console.log("^^^ SAVE DATA ^^^"); 
+
+                // console.log(key.path); // [ 'Company', 5669468231434240 ]
+                // console.log(key.namespace); // undefined
+
+                entity.data._id = key.id;
+
+                var record = entity.data || entity;
+
+                res
+                    .location("/" + key.path.join('/') )  // .location("/" + model + "/" + doc._id)
+                    .status(201)    // Created
+                    .json(record);
+
+            }).catch( function(err) { 
+                console.error(err); 
+                if(err) {
+                    res
+                        .status(500)
+                        .json(err);
+                } 
+            });
+
+        };
+
+        // Automatically parse request body as JSON
+        router.use(bodyParser.json());
+
+        if(middleware) {
+            router.use(middleware);
+        }
+        
+        router.post( '/:model', saveDB );
+
+        resolve(router);
+    });
 };

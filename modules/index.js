@@ -11,7 +11,7 @@
 const express = require('express'),
       app = express(),
       helmet = require('helmet'),
-      PORT = process.env.PORT || 8080,
+      killable = require('killable'),
       datastorePost = require('./datastore-post');
 
 /**
@@ -41,37 +41,23 @@ const express = require('express'),
         console.error(err); 
     });
  */
-module.exports.Datastore = (spec) => {
+module.exports.create = (spec) => {
 
     return new Promise((resolve, reject) => {
 
         spec = spec || {};
 
-        var model = spec.model,
-            projectId = spec.projectId,
-            use = spec.use || [];
-
-        if( ! model ) {
-            reject(new Error("### ERROR: Datastore model must be defined" ) );
-            // return null;
-        }
-
-        if( ! model.name ) {
-            reject(new Error("### ERROR: Datastore model.name must be defined"));
-            // return null;
-        }
-
-        if( ! projectId ) {
-            reject(new Error("### ERROR: Datastore projectId must be defined"));
-            // return null;
-        }
-
-        model.fields = model.fields || {};
-
-        // reject("reason");
+        let _verbose = spec.verbose || false;
 
         // private 
         let _package = "marchio";
+        var _server = null;
+
+        function _log( msg ) {
+            if(_verbose) {
+                console.log(`[marchio]: ${msg}`);
+            }
+        }
 
         resolve({
             // public
@@ -105,12 +91,80 @@ module.exports.Datastore = (spec) => {
                 });
             },
 
-            post: function() {
-                app.use( datastorePost.create({ 
-                    projectId: projectId,
-                    model: model,
-                    // use: [ preprocess ]
-                  }));
+            use: function( middleware ) {
+
+                return new Promise((resolve, reject) => {
+
+                    if(!middleware) {
+                        reject(new Error("marchio.use requires middleware"));
+                    }
+
+                    app.use( middleware );
+
+                    resolve(app);
+                });
+            },
+
+            listen: function( arg ) {
+
+                return new Promise((resolve, reject) => {
+
+                    arg = arg || {};
+
+                    var port  = arg.port;
+
+                    if(!port) {
+                        reject(new Error("marchio.listen requires port parameter"));
+                    }
+
+                    _server = app.listen(port, () => {
+                        _log(`listening on port ${port}`);   
+                    });
+
+                    killable(_server);
+                    resolve(_server);
+                });
+            },
+
+            close: function( arg ) {
+
+                return new Promise((resolve, reject) => {
+
+                    arg = arg || {};
+
+                    if( _server ) {
+                        // _server.close();
+                        _server.close(function() {
+                            _log("closing server"); 
+                            resolve(app);
+                        });
+                    } else {
+                        resolve(app);
+                    }
+
+                });
+            },
+
+            kill: function( arg ) {
+
+                return new Promise((resolve, reject) => {
+
+                    arg = arg || {};
+
+                    if( _server ) {
+                        // _server.close();
+                        _server.kill(function() {
+                            _log("killing server");
+                            resolve(app);
+                        });
+
+                        _server = null;
+
+                    } else {
+                        resolve(app);
+                    }
+
+                });
             }
         });
     });
