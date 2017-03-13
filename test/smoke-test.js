@@ -14,6 +14,7 @@ var request = require('supertest'),
     should = require('should'),
     datastore = require('../modules/datastore'),
     datastorePost = require('../modules/datastore-post'),
+    datastoreGet = require('../modules/datastore-get'),
     modulePath = "../modules/index",
     GOOGLE_TEST_PROJECT = process.env.MARCHIO_TEST_GOOGLE_PROJECT,
     // TEST_PORT = process.env.TEST_PORT || 8080;
@@ -226,6 +227,63 @@ describe('module factory smoke test', () => {
                 .end(function (err, res) {
                     should.not.exist(err);
                     // console.log(res.body);
+                    res.body.email.should.eql(testObject.email);
+                    // // Should not return password
+                    // should.not.exist(res.body.password);
+                    res.body.status.should.eql("NEW");
+                    should.exist(res.body._id);
+                    done();;
+                });
+
+        })
+        .catch( function(err) { 
+            console.error(err.message);
+            done(err);  // to pass on err, remove err (done() - no arguments)
+        });
+    });
+
+    it('datastore-get should succeed', done => {
+
+        var marchio = null;
+        _factory.create( {
+            verbose: false
+        })
+        .then(function(obj) {
+            _marchio = obj;
+            return datastoreGet.create({
+                projectId: GOOGLE_TEST_PROJECT,
+                model: _testModel
+            });
+        })
+        .then(function(datastorePostRouter){
+            should.exist(datastorePostRouter);
+            return _marchio.use(datastorePostRouter);
+        })
+        .then(function(app){
+            should.exist(app);
+            return _marchio.listen( { port: TEST_PORT } )
+        })
+        .then(function() {
+
+            var testObject = {
+                email: "test@example.com"
+            };
+
+            // console.log(`TEST HOST: ${_testHost} `);
+
+            // TODO - get this from a post operations
+            var _recordId = '5067160539889664'; // TEMP hard-coded
+
+            var _getUrl = `/${_testModel.name}/${_recordId}`;
+
+            console.log(_getUrl);
+
+            request(_testHost)
+                .get(_getUrl)
+                .expect(200)
+                .end(function (err, res) {
+                    should.not.exist(err);
+                    console.log(res.body);
                     res.body.email.should.eql(testObject.email);
                     // // Should not return password
                     // should.not.exist(res.body.password);
