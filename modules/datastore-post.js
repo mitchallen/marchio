@@ -143,9 +143,7 @@ module.exports.create = ( spec ) => {
     // Automatically parse request body as JSON
     router.use(bodyParser.json());
 
-    for( let middleware of use ) {
-        router.use(middleware);    
-    }
+    router.use(use);
     
     router.post( '/:model', saveDB );
 
