@@ -12,10 +12,7 @@
 
 var request = require('supertest'),
     should = require('should'),
-    // datastore = require('../modules/datastore'),
     datastore = require('marchio-datastore'),
-    datastorePost = require('../modules/datastore-post'),
-    datastoreGet = require('../modules/datastore-get'),
     modulePath = "../modules/index",
     GOOGLE_TEST_PROJECT = process.env.MARCHIO_TEST_GOOGLE_PROJECT,
     // TEST_PORT = process.env.TEST_PORT || 8080;
@@ -176,55 +173,7 @@ describe('module factory smoke test', () => {
         });
     });
 
-    it('datastore-post should succeed', done => {
-
-        _factory.create( {
-            verbose: false
-        })
-        .then( (obj) => _marchio = obj )
-        .then( () => 
-            datastorePost.create({
-                projectId: GOOGLE_TEST_PROJECT,
-                model: _testModel
-            })
-        )
-        .then( (dsPostRouter) => {
-            should.exist(dsPostRouter);
-            return _marchio.use(dsPostRouter);
-        })
-        .then( () =>  _marchio.listen( { port: TEST_PORT } ) )
-        .then( () => {
-
-            var testObject = {
-                email: "test" + getRandomInt( 1000, 1000000) + "@smoketest.cloud",
-            };
-
-            // console.log(`TEST HOST: ${_testHost} `);
-
-            request(_testHost)
-                .post(_postUrl)
-                .send(testObject)
-                .set('Content-Type', 'application/json')
-                .expect(201)
-                .end(function (err, res) {
-                    should.not.exist(err);
-                    // console.log(res.body);
-                    res.body.email.should.eql(testObject.email);
-                    // // Should not return password
-                    // should.not.exist(res.body.password);
-                    res.body.status.should.eql("NEW");
-                    should.exist(res.body._id);
-                    done();;
-                });
-
-        })
-        .catch( function(err) { 
-            console.error(err.message);
-            done(err);  // to pass on err, remove err (done() - no arguments)
-        });
-    });
-
-    it('datastore-get should succeed', done => {
+    it('datastore.get should succeed', done => {
 
         _factory.create( {
             verbose: false
