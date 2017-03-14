@@ -23,9 +23,10 @@ REST to database mapper
 
 ## Installation
 
->```$ npm init```
-
->```$ npm install marchio --save```
+```
+$ npm init
+$ npm install marchio --save
+```
   
 * * *
 
@@ -33,17 +34,38 @@ REST to database mapper
 
 ### Google Datastore Demo
 
->To run the Google Datastore demo you will need a Google Cloud account.  Visit https://cloud.google.com for more info.
+#### Prerequisite
+
+To run the Google Datastore demo you will need a Google Cloud account.  Visit https://cloud.google.com for more info.
+
+* * *
+
+#### Environment Variables
+
+Create and environment variable set to the value of a Google Cloud project id and another set to an HTTP port value:
+
+```
+$ export MARCHIO_GOOGLE_PROJECT_ID='my-project-id'
+$ export MARCHIO_PORT=8080
+```
+
+You can make this permanent by setting it in <b>~/.bash\_profile</b> on a Mac or in Linux and then running <b>source ~/.bash_profile</b>.
+
+The Google Cloud project must be enabled for Google Datastore.
+
+* * *
+
+#### Create and Run the Demo Project
 
 Create a new folder called __datastore__.
 
 At the command line execute the following (sans $):
 
->```$ npm init```
-
->```$ npm install marchio --save```
-
->```$ npm install marchio-datastore --save```
+```
+$ npm init
+$ npm install marchio --save
+$ npm install marchio-datastore --save
+```
     
 Create a file called __index.js__ and paste in this code and save it:
 
@@ -84,19 +106,27 @@ factory.create({
 
 At the command line run:
 
->```$ node index.js```
+```
+$ node index.js
+```
     
 In a second terminal window run this command:
 
->```$ curl -i -X POST -H "Content-Type: application/json" -d '{"email":"test@demo.com"}' http://localhost:8080/user```
+```
+$ curl -i -X POST -H "Content-Type: application/json" -d '{"email":"test@demo.com"}' http://localhost:8080/user
+```
 
 The response will look like this (but with a different _id number):
 
->```{"email":"test@demo.com","status":"NEW","_id":"1234567890123456"}```
+```
+{"email":"test@demo.com","status":"NEW","_id":"1234567890123456"}
+```
 
 Copy the <b>_id</b> number and paste it into a command like this (replacing <i>1234567890123456</i> with whatever was returned by the POST command):
 
->```$ curl -X GET -H "Accept: applications/json" http://localhost:8080/user/1234567890123456```
+```
+$ curl -X GET -H "Accept: applications/json" http://localhost:8080/user/1234567890123456
+```
 
 In a browser visit https://console.cloud.google.com/datastore/ and verify that Entity has been added.
 
@@ -184,7 +214,7 @@ var _testModel = {
         email:    { type: String, required: true },
         status:   { type: String, required: true, default: "NEW" }
     }
-}
+};
 
 var _marchio = null;
 
@@ -230,7 +260,7 @@ var _testModel = {
         email:    { type: String, required: true },
         status:   { type: String, required: true, default: "NEW" }
     }
-}
+};
 
 var _marchio = null;
 
@@ -309,7 +339,6 @@ factory.create({})
 });
 ```
 
-
 * * *
 
 ## Testing
@@ -335,6 +364,18 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 * * *
 
 ## Version History
+
+#### Version 0.1.7
+
+* Checked in file updates
+
+#### Version 0.1.6
+
+* Added environment variable setup to doc, updated example dependencies
+
+#### Version 0.1.5
+
+* Cleaned up documentation
 
 #### Version 0.1.4
 

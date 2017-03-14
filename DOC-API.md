@@ -78,7 +78,7 @@ var _testModel = {
         email:    { type: String, required: true },
         status:   { type: String, required: true, default: "NEW" }
     }
-}
+};
 
 var _marchio = null;
 
@@ -124,7 +124,7 @@ var _testModel = {
         email:    { type: String, required: true },
         status:   { type: String, required: true, default: "NEW" }
     }
-}
+};
 
 var _marchio = null;
 

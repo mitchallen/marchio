@@ -6,6 +6,10 @@
 /*
     To test:
 
+    Set this environment variable to your Google Cloud project id:
+
+    export MARCHIO_GOOGLE_PROJECT_ID='my-project-id'
+
     In a terminal window run this command:
 
     $ node index.js
@@ -28,6 +32,9 @@
 
  */
 
+/*jshint node: true */
+/*jshint esversion: 6 */
+
 "use strict";
  
 var factory = require("marchio"),
@@ -42,7 +49,7 @@ var _testModel = {
         email:    { type: String, required: true },
         status:   { type: String, required: true, default: "NEW" }
     }
-}
+};
  
 var _marchio = null;
  

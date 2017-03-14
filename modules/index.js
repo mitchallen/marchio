@@ -114,7 +114,7 @@ module.exports.create = (spec) => {
               *         email:    { type: String, required: true },
               *         status:   { type: String, required: true, default: "NEW" }
               *     }
-              * }
+              * };
               *
               * var _marchio = null;
               *
@@ -168,7 +168,7 @@ module.exports.create = (spec) => {
               *         email:    { type: String, required: true },
               *         status:   { type: String, required: true, default: "NEW" }
               *     }
-              * }
+              * };
               *
               * var _marchio = null;
               *
