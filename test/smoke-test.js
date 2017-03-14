@@ -20,6 +20,10 @@ var request = require('supertest'),
     // TEST_PORT = process.env.TEST_PORT || 8080;
     TEST_PORT = 8080;
 
+var getRandomInt = function (min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+};
+
 describe('module factory smoke test', () => {
 
     var _factory = null;
@@ -257,30 +261,42 @@ describe('module factory smoke test', () => {
         .then(function() {
 
             var testObject = {
-                email: "test@example.com"
+                email: "test" + getRandomInt( 1000, 1000000) + "@smoketest.cloud",
             };
 
             // console.log(`TEST HOST: ${_testHost} `);
 
-            // TODO - get this from a post operations
-            var _recordId = '5067160539889664'; // TEMP hard-coded
-
-            var _getUrl = `/${_testModel.name}/${_recordId}`;
-
-            console.log(_getUrl);
-
+            // SETUP - need to post at least one record
             request(_testHost)
-                .get(_getUrl)
-                .expect(200)
+                .post(_postUrl)
+                .send(testObject)
+                .set('Content-Type', 'application/json')
+                .expect(201)
                 .end(function (err, res) {
                     should.not.exist(err);
-                    console.log(res.body);
+                    should.exist(res);
+                    should.not.exist(err);
+                    // console.log(res.body);
                     res.body.email.should.eql(testObject.email);
-                    // // Should not return password
-                    // should.not.exist(res.body.password);
                     res.body.status.should.eql("NEW");
                     should.exist(res.body._id);
-                    done();;
+                    // GET
+                    var _recordId = res.body._id; 
+                    var _getUrl = `/${_testModel.name}/${_recordId}`;
+                    // console.log(_getUrl);
+                    request(_testHost)
+                        .get(_getUrl)
+                        .expect(200)
+                        .end(function (err, res) {
+                            should.not.exist(err);
+                            // console.log(res.body);
+                            res.body.email.should.eql(testObject.email);
+                            // // Should not return password
+                            // should.not.exist(res.body.password);
+                            res.body.status.should.eql("NEW");
+                            should.exist(res.body._id);
+                            done();;
+                        });
                 });
 
         })

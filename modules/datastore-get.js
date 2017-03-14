@@ -52,7 +52,7 @@ module.exports.create = ( spec ) => {
 
                     records.forEach((record) => {
                         const recordKey = record[ds.KEY];
-                        console.log(recordKey.id, record );
+                        // console.log(recordKey.id, record );
                         // TODO - add back in id
                         list.push(record);
                     });

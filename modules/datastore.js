@@ -64,7 +64,6 @@ module.exports.create = ( spec ) => {
         .catch( function(err) { 
             // console.error(err); 
             console.error(`datastore: ${err.message}`);
-            console.log("REJECT");
             reject(err);
         });
     });
