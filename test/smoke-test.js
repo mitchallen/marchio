@@ -141,7 +141,7 @@ describe('module factory smoke test', () => {
             should.exist(dsApp);
             return _marchio.use(dsApp);
         })
-        .then( () => _marchio.listen( { port: TEST_PORT } ) )
+        .then( () => _marchio.listen( TEST_PORT ) )
         .then( () => {
 
             var testObject = {
