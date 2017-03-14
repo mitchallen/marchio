@@ -12,7 +12,8 @@
 
 var request = require('supertest'),
     should = require('should'),
-    datastore = require('../modules/datastore'),
+    // datastore = require('../modules/datastore'),
+    datastore = require('marchio-datastore'),
     datastorePost = require('../modules/datastore-post'),
     datastoreGet = require('../modules/datastore-get'),
     modulePath = "../modules/index",
