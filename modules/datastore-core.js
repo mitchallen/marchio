@@ -1,5 +1,5 @@
 /**
-    Module: datastore.js
+    Module: datastore-core.js
     Author: Mitch Allen
 */
 
@@ -9,12 +9,9 @@
 "use strict";
 
 const express = require('express'),
-      app = express(),
       router = express.Router(),
       bodyParser = require('body-parser'),
-      datastore = require('@google-cloud/datastore'),
-      postRouter = require('./datastore-post'),
-      getRouter = require('./datastore-get');
+      datastore = require('@google-cloud/datastore');
 
 module.exports.create = ( spec ) => {
 
@@ -45,27 +42,17 @@ module.exports.create = ( spec ) => {
         });
 
         // Automatically parse request body as JSON
-        app.use(bodyParser.json());
-        if( middleware ) {
-            app.use(middleware);
+        router.use(bodyParser.json());
+
+        if(middleware) {
+            router.use(middleware);
         }
 
-        Promise.all([
-            postRouter.create({ projectId: projectId, model: model }),
-            getRouter.create({ projectId: projectId, model: model })
-            // TODO - insert other routers
-        ])
-        .then( function(routers) {
-            app.use(routers);
-        })
-        .then( function() {
-            resolve(app);
-        })
-        .catch( function(err) { 
-            // console.error(err); 
-            console.error(`datastore: ${err.message}`);
-            console.log("REJECT");
-            reject(err);
+        resolve({
+            model: model,
+            projectId: projectId,
+            ds: ds,
+            router: router
         });
     });
 };

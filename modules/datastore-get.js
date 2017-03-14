@@ -8,102 +8,78 @@
 
 "use strict";
 
-const express = require('express'),
-      router = express.Router(),
-      bodyParser = require('body-parser'),
-      datastore = require('@google-cloud/datastore');
+const dsCore = require('./datastore-core');
 
 module.exports.create = ( spec ) => {
 
-    return new Promise((resolve, reject) => {
+    return dsCore.create( spec )
+    .then(function(coreObject){
 
-        spec = spec || {};
+        return new Promise((resolve, reject) => {
 
-        var model = spec.model,
-            projectId = spec.projectId,
-            middleware = spec.use;
+            var model = coreObject.model,
+                projectId = coreObject.projectId,
+                middleware = coreObject.use,
+                ds = coreObject.ds,
+                router = coreObject.router;
 
-        if( ! model ) {
-            reject( new Error(".create: model must be defined"));
-        }
+            var getDB = function(req, res, next) {
 
-        if( ! model.name ) {
-            reject ( new Error(".create: model.name must be defined"));
-        }
+                var eMsg = '';
 
-        if( ! projectId ) {
-            reject( new Error(".create: projectId must be defined"));
-        }
+                if( req.params.model !== model.name ) {
+                    eMsg = `### ERROR: '${req.params.model}'' is not a valid database model`;
+                    console.error(eMsg);
+                    res
+                        .status(404)
+                        .json({ error: eMsg });
+                    return;
+                }
 
-        model.fields = model.fields || {};
+                var _id = parseInt(req.params.id, 10);
 
-        const ds = datastore({
-            projectId: projectId
-        });
+                const query = ds.createQuery( model.name )
+                    .filter('__key__', '=', ds.key([ model.name, _id]));
 
-        var getDB = function(req, res, next) {
+                ds.runQuery(query)
+                .then((results) => {
 
-            var eMsg = '';
+                    // console.log(results);
 
-            if( req.params.model !== model.name ) {
-                eMsg = `### ERROR: '${req.params.model}'' is not a valid database model`;
-                console.error(eMsg);
-                res
-                    .status(404)
-                    .json({ error: eMsg });
-                return;
-            }
+                    const records = results[0];
 
-            var _id = parseInt(req.params.id, 10);
+                    var list = [];
 
-            const query = ds.createQuery( model.name )
-                .filter('__key__', '=', ds.key([ model.name, _id]));
+                    records.forEach((record) => {
+                        const recordKey = record[ds.KEY];
+                        console.log(recordKey.id, record );
+                        // TODO - add back in id
+                        list.push(record);
+                    });
 
-            ds.runQuery(query)
-            .then((results) => {
+                    // TODO - what if not found???
+                    var response = list[0];
+                    response._id = _id;
 
-                // console.log(results);
+                    res
+                        .location("/" + [ model.name, _id ].join('/') )  // .location("/" + model + "/" + doc._id)
+                        .status(200)    
+                        .json(response);
 
-                const records = results[0];
-
-                var list = [];
-
-                records.forEach((record) => {
-                    const recordKey = record[ds.KEY];
-                    console.log(recordKey.id, record );
-                    // TODO - add back in id
-                    list.push(record);
+                }).catch( function(err) { 
+                    console.error(err); 
+                    if(err) {
+                        res
+                            .status(500)
+                            .json(err);
+                    } 
                 });
 
-                // TODO - what if not found???
-                var response = list[0];
-                response._id = _id;
+            };
+            
+            router.get( '/:model/:id', getDB );
 
-                res
-                    .location("/" + [ model.name, _id ].join('/') )  // .location("/" + model + "/" + doc._id)
-                    .status(200)    
-                    .json(response);
-
-            }).catch( function(err) { 
-                console.error(err); 
-                if(err) {
-                    res
-                        .status(500)
-                        .json(err);
-                } 
-            });
-
-        };
-
-        // Automatically parse request body as JSON
-        router.use(bodyParser.json());
-
-        if(middleware) {
-            router.use(middleware);
-        }
-        
-        router.get( '/:model/:id', getDB );
-
-        resolve(router);
+            resolve(router);
+        });
     });
 };
