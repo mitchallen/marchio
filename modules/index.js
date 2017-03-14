@@ -101,7 +101,7 @@ module.exports.create = (spec) => {
 
                     app.use( middleware );
 
-                    resolve(app);
+                    resolve();
                 });
             },
 
@@ -122,7 +122,7 @@ module.exports.create = (spec) => {
                     });
 
                     killable(_server);
-                    resolve(_server);
+                    resolve();
                 });
             },
 
@@ -136,10 +136,10 @@ module.exports.create = (spec) => {
                         // _server.close();
                         _server.close(function() {
                             _log("closing server"); 
-                            resolve(app);
+                            resolve();
                         });
                     } else {
-                        resolve(app);
+                        resolve();
                     }
 
                 });
@@ -155,13 +155,13 @@ module.exports.create = (spec) => {
                         // _server.close();
                         _server.kill(function() {
                             _log("killing server");
-                            resolve(app);
+                            resolve();
                         });
 
                         _server = null;
 
                     } else {
-                        resolve(app);
+                        resolve();
                     }
 
                 });
