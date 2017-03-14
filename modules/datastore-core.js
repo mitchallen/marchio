@@ -13,6 +13,27 @@ const express = require('express'),
       bodyParser = require('body-parser'),
       datastore = require('@google-cloud/datastore');
 
+function validateParams(model) {
+    return function(req, res, next) {
+        var eMsg = '';
+
+        console.log(`req.params.model: ${req.params.model}`);
+
+        if( req.params.model !== model.name ) {
+            eMsg = `### ERROR: '${req.params.model}'' is not a valid database model`;
+            console.error(eMsg);
+            res
+                .status(404)
+                .json({ error: eMsg });
+            return next('route');
+        }
+
+        next();
+    };
+}
+
+module.exports.validateParams = validateParams;
+
 module.exports.create = ( spec ) => {
 
     return new Promise((resolve, reject) => {
@@ -47,6 +68,8 @@ module.exports.create = ( spec ) => {
         if(middleware) {
             router.use(middleware);
         }
+
+        // router.use(validateParams(model.name));
 
         resolve({
             model: model,

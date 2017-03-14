@@ -55,14 +55,14 @@ module.exports.create = ( spec ) => {
 
                 var eMsg = '';
 
-                if( req.params.model !== model.name ) {
-                    eMsg = `### ERROR: '${req.params.model}'' is not a valid database model`;
-                    console.error(eMsg);
-                    res
-                        .status(404)
-                        .json({ error: eMsg });
-                    return;
-                }
+                // if( req.params.model !== model.name ) {
+                //     eMsg = `### ERROR: '${req.params.model}'' is not a valid database model`;
+                //     console.error(eMsg);
+                //     res
+                //         .status(404)
+                //         .json({ error: eMsg });
+                //     return;
+                // }
 
                 var record = buildRecord( model.fields, req );
 
@@ -118,7 +118,9 @@ module.exports.create = ( spec ) => {
                 });
             };
             
-            router.post( '/:model', saveDB );
+            router.post( '/:model', dsCore.validateParams(model), saveDB );
+
+            // router.post( '/:model', saveDB );
 
             resolve(router);
         });
