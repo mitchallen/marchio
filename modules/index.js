@@ -11,8 +11,7 @@
 const express = require('express'),
       app = express(),
       helmet = require('helmet'),
-      killable = require('killable'),
-      datastorePost = require('./datastore-post');
+      killable = require('killable');
 
 /**
  * Module
