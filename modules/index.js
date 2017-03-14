@@ -73,8 +73,8 @@ module.exports.create = (spec) => {
               * @memberof module:marchio
               * @returns {Promise}
               * @example <caption>Usage Example</caption>
-              * 
               * "use strict";
+              * 
               * var factory = require("marchio");
               *
               * factory.create()
@@ -99,7 +99,6 @@ module.exports.create = (spec) => {
               * @param {middleware} middleware ExpressJS middleware function, app, or router
               * @returns {Promise}
               * @example <caption>Usage Example</caption>
-              *
               * // $ npm install --save marchio-datastore
               *
               * "use strict";
@@ -123,7 +122,7 @@ module.exports.create = (spec) => {
               * .then( (obj) => _marchio = obj )
               * .then( () => 
               *     datastore.create({
-              *         projectId: GOOGLE_TEST_PROJECT,
+              *         projectId: GOOGLE_PROJECT_ID,
               *         model: _testModel
               *     })
               * )
@@ -153,7 +152,6 @@ module.exports.create = (spec) => {
               * @param {Number} port Port to listen for HTTP requests
               * @returns {Promise}
               * @example <caption>Usage Example</caption>
-              *
               * // $ npm install --save marchio-datastore
               *
               * "use strict";
@@ -178,12 +176,12 @@ module.exports.create = (spec) => {
               * .then( (obj) => _marchio = obj )
               * .then( () => 
               *    datastore.create({
-              *         projectId: GOOGLE_TEST_PROJECT,
+              *         projectId: GOOGLE_PROJECT_ID,
               *         model: _testModel
               *     })
               * )
               * .then( (dsApp) => _marchio.use(dsApp) )
-              * .then( () => _marchio.listen( { port: PORT } ) )
+              * .then( () => _marchio.listen( PORT ) )
               * .catch( function(err) { 
               *     console.error(err); 
               * });

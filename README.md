@@ -23,9 +23,85 @@ REST to database mapper
 
 ## Installation
 
-    $ npm init
-    $ npm install marchio --save
+>```$ npm init```
+
+>```$ npm install marchio --save```
   
+* * *
+
+## Usage
+
+### Google Datastore Demo
+
+>To run the Google Datastore demo you will need a Google Cloud account.  Visit https://cloud.google.com for more info.
+
+Create a new folder called __datastore__.
+
+At the command line execute the following (sans $):
+
+>```$ npm init```
+
+>```$ npm install marchio --save```
+
+>```$ npm install marchio-datastore --save```
+    
+Create a file called __index.js__ and paste in this code and save it:
+
+```javascript
+"use strict";
+ 
+var factory = require("marchio"),
+    datastore = require('marchio-datastore');
+ 
+const GOOGLE_PROJECT_ID = process.env.MARCHIO_GOOGLE_PROJECT_ID,
+      PORT = process.env.MARCHIO_PORT || 8080;
+ 
+var _testModel = {
+    name: 'user',
+    fields: {
+        email:    { type: String, required: true },
+        status:   { type: String, required: true, default: "NEW" }
+    }
+}
+ 
+var _marchio = null;
+ 
+factory.create({
+    verbose: true
+})
+.then( (obj) => _marchio = obj )
+.then( () => 
+   datastore.create({
+        projectId: GOOGLE_PROJECT_ID,
+        model: _testModel
+    })
+)
+.then( (dsApp) => _marchio.use(dsApp) )
+.then( () => _marchio.listen( PORT ) )
+.catch( function(err) { 
+    
+```
+
+At the command line run:
+
+>```$ node index.js```
+    
+In a second terminal window run this command:
+
+>```$ curl -i -X POST -H "Content-Type: application/json" -d '{"email":"test@demo.com"}' http://localhost:8080/user```
+
+The response will look like this (but with a different _id number):
+
+>```{"email":"test@demo.com","status":"NEW","_id":"1234567890123456"}```
+
+Copy the <b>_id</b> number and paste it into a command like this (replacing <i>1234567890123456</i> with whatever was returned by the POST command):
+
+>```$ curl -X GET -H "Accept: applications/json" http://localhost:8080/user/1234567890123456```
+
+In a browser visit https://console.cloud.google.com/datastore/ and verify that Entity has been added.
+
+Try the POST command a few more times, changing the email address value each time.
+
 * * *
 
 ## Modules
@@ -67,8 +143,8 @@ Health check
 **Kind**: instance method of <code>[marchio](#module_marchio)</code>  
 **Example** *(Usage Example)*  
 ```js
-
 "use strict";
+
 var factory = require("marchio");
 
 factory.create()
@@ -93,7 +169,6 @@ Use middleware function
 
 **Example** *(Usage Example)*  
 ```js
-
 // $ npm install --save marchio-datastore
 
 "use strict";
@@ -117,7 +192,7 @@ factory.create({})
 .then( (obj) => _marchio = obj )
 .then( () => 
     datastore.create({
-        projectId: GOOGLE_TEST_PROJECT,
+        projectId: GOOGLE_PROJECT_ID,
         model: _testModel
     })
 )
@@ -139,7 +214,6 @@ Listen function
 
 **Example** *(Usage Example)*  
 ```js
-
 // $ npm install --save marchio-datastore
 
 "use strict";
@@ -164,12 +238,12 @@ factory.create({})
 .then( (obj) => _marchio = obj )
 .then( () => 
    datastore.create({
-        projectId: GOOGLE_TEST_PROJECT,
+        projectId: GOOGLE_PROJECT_ID,
         model: _testModel
     })
 )
 .then( (dsApp) => _marchio.use(dsApp) )
-.then( () => _marchio.listen( { port: PORT } ) )
+.then( () => _marchio.listen( PORT ) )
 .catch( function(err) { 
     console.error(err); 
 });
@@ -261,6 +335,14 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 * * *
 
 ## Version History
+
+#### Version 0.1.4
+
+* Added Google Datastore example, added usage documentation
+
+#### Version 0.1.3
+
+* Fixed main reference in package.json
 
 #### Version 0.1.2
 

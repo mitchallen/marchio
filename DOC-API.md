@@ -37,8 +37,8 @@ Health check
 **Kind**: instance method of <code>[marchio](#module_marchio)</code>  
 **Example** *(Usage Example)*  
 ```js
-
 "use strict";
+
 var factory = require("marchio");
 
 factory.create()
@@ -63,7 +63,6 @@ Use middleware function
 
 **Example** *(Usage Example)*  
 ```js
-
 // $ npm install --save marchio-datastore
 
 "use strict";
@@ -87,7 +86,7 @@ factory.create({})
 .then( (obj) => _marchio = obj )
 .then( () => 
     datastore.create({
-        projectId: GOOGLE_TEST_PROJECT,
+        projectId: GOOGLE_PROJECT_ID,
         model: _testModel
     })
 )
@@ -109,7 +108,6 @@ Listen function
 
 **Example** *(Usage Example)*  
 ```js
-
 // $ npm install --save marchio-datastore
 
 "use strict";
@@ -134,12 +132,12 @@ factory.create({})
 .then( (obj) => _marchio = obj )
 .then( () => 
    datastore.create({
-        projectId: GOOGLE_TEST_PROJECT,
+        projectId: GOOGLE_PROJECT_ID,
         model: _testModel
     })
 )
 .then( (dsApp) => _marchio.use(dsApp) )
-.then( () => _marchio.listen( { port: PORT } ) )
+.then( () => _marchio.listen( PORT ) )
 .catch( function(err) { 
     console.error(err); 
 });
