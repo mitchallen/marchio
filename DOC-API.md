@@ -56,8 +56,11 @@ Use middleware function
 **Kind**: instance method of <code>[marchio](#module_marchio)</code>  
 **Example** *(Usage Example)*  
 ```js
+
+                // $ npm install --save marchio-datastore
+
                 var factory = require("marchio"),
-                    datastore = require(<datastore>)
+                    datastore = require('marchio-datastore');
 
                 var GOOGLE_PROJECT_ID = process.env.MARCHIO_GOOGLE_PROJECT_ID;
 
@@ -92,8 +95,11 @@ Listen function
 **Kind**: instance method of <code>[marchio](#module_marchio)</code>  
 **Example** *(Usage Example)*  
 ```js
+
+                // $ npm install --save marchio-datastore
+
                 var factory = require("marchio"),
-                    datastore = require(<datastore>)
+                    datastore = require('marchio-datastore');
 
                 const GOOGLE_PROJECT_ID = process.env.MARCHIO_GOOGLE_PROJECT_ID,
                       PORT = process.env.MARCHIO_PORT || 8080;

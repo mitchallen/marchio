@@ -96,8 +96,11 @@ module.exports.create = (spec) => {
               * @memberof module:marchio
               * @returns {Promise}
               * @example <caption>Usage Example</caption>
+
+                // $ npm install --save marchio-datastore
+
                 var factory = require("marchio"),
-                    datastore = require(<datastore>)
+                    datastore = require('marchio-datastore');
 
                 var GOOGLE_PROJECT_ID = process.env.MARCHIO_GOOGLE_PROJECT_ID;
 
@@ -144,8 +147,11 @@ module.exports.create = (spec) => {
               * @memberof module:marchio
               * @returns {Promise}
               * @example <caption>Usage Example</caption>
+
+                // $ npm install --save marchio-datastore
+
                 var factory = require("marchio"),
-                    datastore = require(<datastore>)
+                    datastore = require('marchio-datastore');
 
                 const GOOGLE_PROJECT_ID = process.env.MARCHIO_GOOGLE_PROJECT_ID,
                       PORT = process.env.MARCHIO_PORT || 8080;
