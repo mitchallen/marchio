@@ -31,7 +31,7 @@ describe('module factory smoke test', () => {
     var _marchio = null;
 
     var _testModel = {
-        name: 'user',
+        name: 'smoketest',
         fields: {
             email:    { type: String, required: true },
             status:   { type: String, required: true, default: "NEW" },
@@ -147,7 +147,7 @@ describe('module factory smoke test', () => {
         .then( () => {
 
             var testObject = {
-                email: "test@example.com"
+                email: "test" + getRandomInt( 1000, 1000000) + "@smoketest.cloud",
             };
 
             // console.log(`TEST HOST: ${_testHost} `);
@@ -195,7 +195,7 @@ describe('module factory smoke test', () => {
         .then( () => {
 
             var testObject = {
-                email: "testpost@example.com"
+                email: "test" + getRandomInt( 1000, 1000000) + "@smoketest.cloud",
             };
 
             // console.log(`TEST HOST: ${_testHost} `);

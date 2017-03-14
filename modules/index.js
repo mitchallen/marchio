@@ -31,13 +31,14 @@ const express = require('express'),
  * @param {Object} spec Named parameters object
  * @returns {Promise} that resolves to {module:marchio}
  * @example <caption>Usage example</caption>
+
+    "use strict";
+
     var factory = require("marchio");
  
     factory.create({})
-    .then( (obj) => {
-        obj.health();
-    })
-    .catch( function(err) { 
+    .then( (obj) => obj.health() )
+    .catch( (err) => { 
         console.error(err); 
     });
  */
@@ -74,14 +75,12 @@ module.exports.create = (spec) => {
               * @example <caption>Usage Example</caption>
                 var factory = require("marchio");
              
-                factory.create({})
-                .then(function(obj) {
-                    return obj.health();
-                })
-                .then(function(result) {
+                factory.create()
+                .then( (obj) => obj.health() )
+                .then( (result) => {
                     console.log("HEALTH: ", result);
                 })
-                .catch( function(err) { 
+                .catch( (err) => { 
                     console.error(err); 
                 });
             */
@@ -96,23 +95,30 @@ module.exports.create = (spec) => {
               * @instance
               * @memberof module:marchio
               * @example <caption>Usage Example</caption>
-                var factory = require("marchio");
+                var factory = require("marchio"),
+                    datastore = require(<datastore>)
 
                 var GOOGLE_PROJECT_ID = process.env.MARCHIO_GOOGLE_PROJECT_ID;
+
+                var _testModel = {
+                    name: 'user',
+                    fields: {
+                        email:    { type: String, required: true },
+                        status:   { type: String, required: true, default: "NEW" }
+                    }
+                }
 
                 var _marchio = null;
              
                 factory.create({})
-                .then(function(obj) {
-                    _marchio = obj;
-                    return datastore.create({
-                        projectId: GOOGLE_PROJECT_ID,
+                .then( (obj) => _marchio = obj )
+                .then( () => 
+                    datastore.create({
+                        projectId: GOOGLE_TEST_PROJECT,
                         model: _testModel
-                    });
-                })
-                .then(function(result) {
-                    console.log("HEALTH: ", result);
-                })
+                    })
+                )
+                .then( (dsApp) => _marchio.use(dsApp) )
                 .catch( function(err) { 
                     console.error(err); 
                 });
@@ -130,6 +136,42 @@ module.exports.create = (spec) => {
                     resolve();
                 });
             },
+
+            /** Listen function
+              * @function
+              * @instance
+              * @memberof module:marchio
+              * @example <caption>Usage Example</caption>
+                var factory = require("marchio"),
+                    datastore = require(<datastore>)
+
+                const GOOGLE_PROJECT_ID = process.env.MARCHIO_GOOGLE_PROJECT_ID,
+                      PORT = process.env.MARCHIO_PORT || 8080;
+
+                var _testModel = {
+                    name: 'user',
+                    fields: {
+                        email:    { type: String, required: true },
+                        status:   { type: String, required: true, default: "NEW" }
+                    }
+                }
+
+                var _marchio = null;
+             
+                factory.create({})
+                .then( (obj) => _marchio = obj )
+                .then( () => 
+                    datastore.create({
+                        projectId: GOOGLE_TEST_PROJECT,
+                        model: _testModel
+                    })
+                )
+                .then( (dsApp) => _marchio.use(dsApp) )
+                .then( () => _marchio.listen( { port: PORT } ) )
+                .catch( function(err) { 
+                    console.error(err); 
+                });
+            */
 
             listen: function( arg ) {
 
@@ -152,6 +194,18 @@ module.exports.create = (spec) => {
                 });
             },
 
+
+            /** Close function
+              * @function
+              * @instance
+              * @memberof module:marchio
+              * @example <caption>Usage Example</caption>
+                _marchio.close()
+                    .then( () => _marchio.kill() )
+                    .catch( (err) => { 
+                        console.error(err.message);
+                    });
+            */
             close: function( arg ) {
 
                 return new Promise((resolve, reject) => {
@@ -171,6 +225,17 @@ module.exports.create = (spec) => {
                 });
             },
 
+            /** Kill function
+              * @function
+              * @instance
+              * @memberof module:marchio
+              * @example <caption>Usage Example</caption>
+                _marchio.close()
+                    .then( () => _marchio.kill() )
+                    .catch( (err) => { 
+                        console.error(err.message);
+                    });
+            */
             kill: function( arg ) {
 
                 return new Promise((resolve, reject) => {

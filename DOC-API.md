@@ -19,6 +19,9 @@ Module
     * [.package()](#module_marchio+package)
     * [.health()](#module_marchio+health)
     * [.use()](#module_marchio+use)
+    * [.listen()](#module_marchio+listen)
+    * [.close()](#module_marchio+close)
+    * [.kill()](#module_marchio+kill)
 
 <a name="module_marchio+package"></a>
 
@@ -36,14 +39,12 @@ Health check
 ```js
                 var factory = require("marchio");
              
-                factory.create({})
-                .then(function(obj) {
-                    return obj.health();
-                })
-                .then(function(result) {
+                factory.create()
+                .then( (obj) => obj.health() )
+                .then( (result) => {
                     console.log("HEALTH: ", result);
                 })
-                .catch( function(err) { 
+                .catch( (err) => { 
                     console.error(err); 
                 });
 ```
@@ -55,26 +56,99 @@ Use middleware function
 **Kind**: instance method of <code>[marchio](#module_marchio)</code>  
 **Example** *(Usage Example)*  
 ```js
-                var factory = require("marchio");
+                var factory = require("marchio"),
+                    datastore = require(<datastore>)
 
                 var GOOGLE_PROJECT_ID = process.env.MARCHIO_GOOGLE_PROJECT_ID;
+
+                var _testModel = {
+                    name: 'user',
+                    fields: {
+                        email:    { type: String, required: true },
+                        status:   { type: String, required: true, default: "NEW" }
+                    }
+                }
 
                 var _marchio = null;
              
                 factory.create({})
-                .then(function(obj) {
-                    _marchio = obj;
-                    return datastore.create({
-                        projectId: GOOGLE_PROJECT_ID,
+                .then( (obj) => _marchio = obj )
+                .then( () => 
+                    datastore.create({
+                        projectId: GOOGLE_TEST_PROJECT,
                         model: _testModel
-                    });
-                })
-                .then(function(result) {
-                    console.log("HEALTH: ", result);
-                })
+                    })
+                )
+                .then( (dsApp) => _marchio.use(dsApp) )
                 .catch( function(err) { 
                     console.error(err); 
                 });
+```
+<a name="module_marchio+listen"></a>
+
+### marchio.listen()
+Listen function
+
+**Kind**: instance method of <code>[marchio](#module_marchio)</code>  
+**Example** *(Usage Example)*  
+```js
+                var factory = require("marchio"),
+                    datastore = require(<datastore>)
+
+                const GOOGLE_PROJECT_ID = process.env.MARCHIO_GOOGLE_PROJECT_ID,
+                      PORT = process.env.MARCHIO_PORT || 8080;
+
+                var _testModel = {
+                    name: 'user',
+                    fields: {
+                        email:    { type: String, required: true },
+                        status:   { type: String, required: true, default: "NEW" }
+                    }
+                }
+
+                var _marchio = null;
+             
+                factory.create({})
+                .then( (obj) => _marchio = obj )
+                .then( () => 
+                    datastore.create({
+                        projectId: GOOGLE_TEST_PROJECT,
+                        model: _testModel
+                    })
+                )
+                .then( (dsApp) => _marchio.use(dsApp) )
+                .then( () => _marchio.listen( { port: PORT } ) )
+                .catch( function(err) { 
+                    console.error(err); 
+                });
+```
+<a name="module_marchio+close"></a>
+
+### marchio.close()
+Close function
+
+**Kind**: instance method of <code>[marchio](#module_marchio)</code>  
+**Example** *(Usage Example)*  
+```js
+                _marchio.close()
+                    .then( () => _marchio.kill() )
+                    .catch( (err) => { 
+                        console.error(err.message);
+                    });
+```
+<a name="module_marchio+kill"></a>
+
+### marchio.kill()
+Kill function
+
+**Kind**: instance method of <code>[marchio](#module_marchio)</code>  
+**Example** *(Usage Example)*  
+```js
+                _marchio.close()
+                    .then( () => _marchio.kill() )
+                    .catch( (err) => { 
+                        console.error(err.message);
+                    });
 ```
 <a name="module_marchio-factory"></a>
 
@@ -96,13 +170,14 @@ It takes one spec parameter that must be an object with named parameters
 
 **Example** *(Usage example)*  
 ```js
+
+    "use strict";
+
     var factory = require("marchio");
  
     factory.create({})
-    .then( (obj) => {
-        obj.health();
-    })
-    .catch( function(err) { 
+    .then( (obj) => obj.health() )
+    .catch( (err) => { 
         console.error(err); 
     });
 ```
