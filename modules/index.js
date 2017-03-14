@@ -72,6 +72,7 @@ module.exports.create = (spec) => {
               * @function
               * @instance
               * @memberof module:marchio
+              * @returns {Promise}
               * @example <caption>Usage Example</caption>
                 var factory = require("marchio");
              
@@ -94,6 +95,7 @@ module.exports.create = (spec) => {
               * @function
               * @instance
               * @memberof module:marchio
+              * @returns {Promise}
               * @example <caption>Usage Example</caption>
                 var factory = require("marchio"),
                     datastore = require(<datastore>)
@@ -141,6 +143,7 @@ module.exports.create = (spec) => {
               * @function
               * @instance
               * @memberof module:marchio
+              * @returns {Promise}
               * @example <caption>Usage Example</caption>
                 var factory = require("marchio"),
                     datastore = require(<datastore>)
@@ -199,6 +202,7 @@ module.exports.create = (spec) => {
               * @function
               * @instance
               * @memberof module:marchio
+              * @returns {Promise}
               * @example <caption>Usage Example</caption>
                 _marchio.close()
                     .then( () => _marchio.kill() )
@@ -229,6 +233,7 @@ module.exports.create = (spec) => {
               * @function
               * @instance
               * @memberof module:marchio
+              * @returns {Promise}
               * @example <caption>Usage Example</caption>
                 _marchio.close()
                     .then( () => _marchio.kill() )

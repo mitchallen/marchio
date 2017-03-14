@@ -17,11 +17,11 @@ Module
 
 * [marchio](#module_marchio)
     * [.package()](#module_marchio+package)
-    * [.health()](#module_marchio+health)
-    * [.use()](#module_marchio+use)
-    * [.listen()](#module_marchio+listen)
-    * [.close()](#module_marchio+close)
-    * [.kill()](#module_marchio+kill)
+    * [.health()](#module_marchio+health) ⇒ <code>Promise</code>
+    * [.use()](#module_marchio+use) ⇒ <code>Promise</code>
+    * [.listen()](#module_marchio+listen) ⇒ <code>Promise</code>
+    * [.close()](#module_marchio+close) ⇒ <code>Promise</code>
+    * [.kill()](#module_marchio+kill) ⇒ <code>Promise</code>
 
 <a name="module_marchio+package"></a>
 
@@ -31,7 +31,7 @@ Returns the package name
 **Kind**: instance method of <code>[marchio](#module_marchio)</code>  
 <a name="module_marchio+health"></a>
 
-### marchio.health()
+### marchio.health() ⇒ <code>Promise</code>
 Health check
 
 **Kind**: instance method of <code>[marchio](#module_marchio)</code>  
@@ -50,7 +50,7 @@ Health check
 ```
 <a name="module_marchio+use"></a>
 
-### marchio.use()
+### marchio.use() ⇒ <code>Promise</code>
 Use middleware function
 
 **Kind**: instance method of <code>[marchio](#module_marchio)</code>  
@@ -86,7 +86,7 @@ Use middleware function
 ```
 <a name="module_marchio+listen"></a>
 
-### marchio.listen()
+### marchio.listen() ⇒ <code>Promise</code>
 Listen function
 
 **Kind**: instance method of <code>[marchio](#module_marchio)</code>  
@@ -124,7 +124,7 @@ Listen function
 ```
 <a name="module_marchio+close"></a>
 
-### marchio.close()
+### marchio.close() ⇒ <code>Promise</code>
 Close function
 
 **Kind**: instance method of <code>[marchio](#module_marchio)</code>  
@@ -138,7 +138,7 @@ Close function
 ```
 <a name="module_marchio+kill"></a>
 
-### marchio.kill()
+### marchio.kill() ⇒ <code>Promise</code>
 Kill function
 
 **Kind**: instance method of <code>[marchio](#module_marchio)</code>  
