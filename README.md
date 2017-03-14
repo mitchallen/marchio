@@ -356,6 +356,12 @@ To test, go to the root folder and type (sans __$__):
 
 * * *
 
+## Donations
+
+In lieu of donations you can support this project by buying one of my books: http://amazon.com/author/mitch.allen
+
+* * *
+
 ## Contributing
 
 In lieu of a formal style guide, take care to maintain the existing coding style.
@@ -364,6 +370,10 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 * * *
 
 ## Version History
+
+#### Version 0.1.8
+
+* Updated documentation
 
 #### Version 0.1.7
 
