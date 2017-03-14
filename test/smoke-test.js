@@ -68,12 +68,8 @@ describe('module factory smoke test', () => {
         // console.log("AFTER EACH");
         if(_marchio) {
             _marchio.close()
-            .then( () => { 
-                _marchio.kill();
-            })
-            .then( () => { 
-                done();
-            })
+            .then( () => _marchio.kill() )
+            .then( () => done() )
             .catch( (err) => { 
                 console.error(err.message);
                 done(err);  // to pass on err, remove err (done() - no arguments)
@@ -91,10 +87,8 @@ describe('module factory smoke test', () => {
 
     it('create method with no spec should return object', done => {
         _factory.create()
-        .then( (obj)=> {
-            should.exist(obj);
-            done();
-        })
+        .then( (obj) => should.exist(obj) )
+        .then( () => done() )
         .catch( (err) => {  
             console.error(err.message);
             done(err);  // to pass on err, remove err (done() - no arguments)
@@ -103,13 +97,9 @@ describe('module factory smoke test', () => {
 
     it('health method should return ok', done => {
         _factory.create()
-        .then( (obj) => {
-            return obj.health();
-        })
-        .then( (result) => {
-            result.should.eql("OK");
-            done();
-        })
+        .then( (obj) => obj.health() )
+        .then( (result) => result.should.eql("OK") )
+        .then( () => done() )
         .catch( (err) => { 
             console.error(err.message);
             done(err); 
@@ -118,21 +108,19 @@ describe('module factory smoke test', () => {
 
     it('use method with valid properties should return object', done => {
 
-        _factory.create( { 
-            verbose: true 
-        })
-        .then( (obj) => {
-            _marchio = obj;
-            return datastore.create({
+        _factory.create( { verbose: true }) 
+        .then( (obj) => _marchio = obj )
+        .then( () => 
+            datastore.create({
                 projectId: GOOGLE_TEST_PROJECT,
                 model: _testModel
-            });
-        })
+            })
+        )
         .then( (dsApp) => {
             should.exist(dsApp);
             _marchio.use(dsApp);
-            done();
         })
+        .then( () => done() )
         .catch( function(err) { ; 
             console.error(err.message);
             done(err);  // to pass on err, remove err (done() - no arguments)
@@ -144,20 +132,18 @@ describe('module factory smoke test', () => {
         _factory.create( {
             verbose: false
         })
-        .then( (obj) => {
-            _marchio = obj;
-            return datastore.create({
+        .then( (obj) => _marchio = obj )
+        .then( () => 
+            datastore.create({
                 projectId: GOOGLE_TEST_PROJECT,
                 model: _testModel
-            });
-        })
+            })
+        )
         .then( (dsApp) => {
             should.exist(dsApp);
             return _marchio.use(dsApp);
         })
-        .then( () => {
-            return _marchio.listen( { port: TEST_PORT } )
-        })
+        .then( () => _marchio.listen( { port: TEST_PORT } ) )
         .then( () => {
 
             var testObject = {
@@ -194,20 +180,18 @@ describe('module factory smoke test', () => {
         _factory.create( {
             verbose: false
         })
-        .then( (obj) => {
-            _marchio = obj;
-            return datastorePost.create({
+        .then( (obj) => _marchio = obj )
+        .then( () => 
+            datastorePost.create({
                 projectId: GOOGLE_TEST_PROJECT,
                 model: _testModel
-            });
-        })
+            })
+        )
         .then( (dsPostRouter) => {
             should.exist(dsPostRouter);
             return _marchio.use(dsPostRouter);
         })
-        .then( () => {
-            return _marchio.listen( { port: TEST_PORT } )
-        })
+        .then( () =>  _marchio.listen( { port: TEST_PORT } ) )
         .then( () => {
 
             var testObject = {
@@ -244,21 +228,19 @@ describe('module factory smoke test', () => {
         _factory.create( {
             verbose: false
         })
-        .then( (obj) => {
-            _marchio = obj;
-            return datastoreGet.create({
+        .then( (obj) => _marchio = obj )
+        .then( () => 
+            datastore.create({
                 projectId: GOOGLE_TEST_PROJECT,
                 model: _testModel
-            });
-        })
+            })
+        )
         .then( (dsPostRouter) => {
             should.exist(dsPostRouter);
             return _marchio.use(dsPostRouter);
         })
+        .then( () => _marchio.listen( { port: TEST_PORT } ) )
         .then( () => {
-            _marchio.listen( { port: TEST_PORT } )
-        })
-        .then(function() {
 
             var testObject = {
                 email: "test" + getRandomInt( 1000, 1000000) + "@smoketest.cloud",

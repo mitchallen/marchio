@@ -18,6 +18,7 @@ Module
 * [marchio](#module_marchio)
     * [.package()](#module_marchio+package)
     * [.health()](#module_marchio+health)
+    * [.use()](#module_marchio+use)
 
 <a name="module_marchio+package"></a>
 
@@ -38,6 +39,35 @@ Health check
                 factory.create({})
                 .then(function(obj) {
                     return obj.health();
+                })
+                .then(function(result) {
+                    console.log("HEALTH: ", result);
+                })
+                .catch( function(err) { 
+                    console.error(err); 
+                });
+```
+<a name="module_marchio+use"></a>
+
+### marchio.use()
+Use middleware function
+
+**Kind**: instance method of <code>[marchio](#module_marchio)</code>  
+**Example** *(Usage Example)*  
+```js
+                var factory = require("marchio");
+
+                var GOOGLE_PROJECT_ID = process.env.MARCHIO_GOOGLE_PROJECT_ID;
+
+                var _marchio = null;
+             
+                factory.create({})
+                .then(function(obj) {
+                    _marchio = obj;
+                    return datastore.create({
+                        projectId: GOOGLE_PROJECT_ID,
+                        model: _testModel
+                    });
                 })
                 .then(function(result) {
                     console.log("HEALTH: ", result);
@@ -69,8 +99,8 @@ It takes one spec parameter that must be an object with named parameters
     var factory = require("marchio");
  
     factory.create({})
-    .then(function(obj) {
-        return obj.health();
+    .then( (obj) => {
+        obj.health();
     })
     .catch( function(err) { 
         console.error(err); 

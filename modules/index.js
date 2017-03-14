@@ -34,8 +34,8 @@ const express = require('express'),
     var factory = require("marchio");
  
     factory.create({})
-    .then(function(obj) {
-        return obj.health();
+    .then( (obj) => {
+        obj.health();
     })
     .catch( function(err) { 
         console.error(err); 
@@ -91,6 +91,32 @@ module.exports.create = (spec) => {
                 });
             },
 
+            /** Use middleware function
+              * @function
+              * @instance
+              * @memberof module:marchio
+              * @example <caption>Usage Example</caption>
+                var factory = require("marchio");
+
+                var GOOGLE_PROJECT_ID = process.env.MARCHIO_GOOGLE_PROJECT_ID;
+
+                var _marchio = null;
+             
+                factory.create({})
+                .then(function(obj) {
+                    _marchio = obj;
+                    return datastore.create({
+                        projectId: GOOGLE_PROJECT_ID,
+                        model: _testModel
+                    });
+                })
+                .then(function(result) {
+                    console.log("HEALTH: ", result);
+                })
+                .catch( function(err) { 
+                    console.error(err); 
+                });
+            */
             use: function( middleware ) {
 
                 return new Promise((resolve, reject) => {
