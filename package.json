@@ -1,8 +1,8 @@
 {
   "name": "marchio",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "REST to database mapper",
-  "main": "dist/marchio.js",
+  "main": "modules/index.js",
   "scripts": {
     "//": "To use: npm start (useful if not a module)",
     "start": "node dist/marchio.js",
