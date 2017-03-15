@@ -28,6 +28,14 @@
 
     In a browser visit https://console.cloud.google.com/datastore/ and verify that Entity has been added.
 
+    Paste the id into another command like this (replacing 1234567890123456 with whatever was returned by the POST command):
+
+    $ curl -i -X PUT -H "Content-Type: application/json" -d '{"email":"test@demo.com", "status":"UPDATED"}' http://localhost:8080/user/1234567890123456
+
+    Run the GET command again to see the change to the status value.
+
+    In a browser visit https://console.cloud.google.com/datastore/ and verify that Entity has been updated.
+
     Try the POST command a few more times, changing the email address each time.
 
  */
@@ -62,7 +70,8 @@ factory.create({
         projectId: GOOGLE_PROJECT_ID,
         model: _testModel,
         post: true,
-        get: true
+        get: true,
+        put: true
     })
 )
 .then( (dsApp) => _marchio.use(dsApp) )
