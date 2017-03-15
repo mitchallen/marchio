@@ -95,7 +95,9 @@ factory.create({
 .then( () => 
    datastore.create({
         projectId: GOOGLE_PROJECT_ID,
-        model: _testModel
+        model: _testModel,
+        post: true,
+        get: true
     })
 )
 .then( (dsApp) => _marchio.use(dsApp) )
@@ -225,7 +227,9 @@ factory.create({})
 .then( () => 
     datastore.create({
         projectId: GOOGLE_PROJECT_ID,
-        model: _testModel
+        model: _testModel,
+        post: true,
+        get: true
     })
 )
 .then( (dsApp) => _marchio.use(dsApp) )
@@ -271,7 +275,9 @@ factory.create({})
 .then( () => 
    datastore.create({
         projectId: GOOGLE_PROJECT_ID,
-        model: _testModel
+        model: _testModel,
+        post: true,
+        get: true
     })
 )
 .then( (dsApp) => _marchio.use(dsApp) )
@@ -341,6 +347,7 @@ factory.create({})
 });
 ```
 
+
 * * *
 
 ## Testing
@@ -372,6 +379,11 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 * * *
 
 ## Version History
+
+#### Version 0.1.10
+
+* Upgraded marchio-datastore version
+* Now must specify what HTTP method to enable in datastore.create method.
 
 #### Version 0.1.9
 

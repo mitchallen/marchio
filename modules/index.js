@@ -123,7 +123,9 @@ module.exports.create = (spec) => {
               * .then( () => 
               *     datastore.create({
               *         projectId: GOOGLE_PROJECT_ID,
-              *         model: _testModel
+              *         model: _testModel,
+              *         post: true,
+              *         get: true
               *     })
               * )
               * .then( (dsApp) => _marchio.use(dsApp) )
@@ -177,7 +179,9 @@ module.exports.create = (spec) => {
               * .then( () => 
               *    datastore.create({
               *         projectId: GOOGLE_PROJECT_ID,
-              *         model: _testModel
+              *         model: _testModel,
+              *         post: true,
+              *         get: true
               *     })
               * )
               * .then( (dsApp) => _marchio.use(dsApp) )

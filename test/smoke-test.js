@@ -111,7 +111,8 @@ describe('module factory smoke test', () => {
         .then( () => 
             datastore.create({
                 projectId: GOOGLE_TEST_PROJECT,
-                model: _testModel
+                model: _testModel,
+                post: true
             })
         )
         .then( (dsApp) => {
@@ -134,7 +135,8 @@ describe('module factory smoke test', () => {
         .then( () => 
             datastore.create({
                 projectId: GOOGLE_TEST_PROJECT,
-                model: _testModel
+                model: _testModel,
+                post: true
             })
         )
         .then( (dsApp) => {
@@ -182,7 +184,9 @@ describe('module factory smoke test', () => {
         .then( () => 
             datastore.create({
                 projectId: GOOGLE_TEST_PROJECT,
-                model: _testModel
+                model: _testModel,
+                post: true,
+                get: true
             })
         )
         .then( (dsPostRouter) => {
