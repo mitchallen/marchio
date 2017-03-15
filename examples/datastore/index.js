@@ -65,6 +65,6 @@ factory.create({
 )
 .then( (dsApp) => _marchio.use(dsApp) )
 .then( () => _marchio.listen( PORT ) )
-.catch( function(err) { 
+.catch( (err) => { 
     console.error(err); 
 });

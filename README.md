@@ -42,7 +42,7 @@ To run the Google Datastore demo you will need a Google Cloud account.  Visit ht
 
 #### Environment Variables
 
-Create and environment variable set to the value of a Google Cloud project id and another set to an HTTP port value:
+Create an environment variable set to the value of a Google Cloud project id and another set to an HTTP port value:
 
 ```
 $ export MARCHIO_GOOGLE_PROJECT_ID='my-project-id'
@@ -100,7 +100,9 @@ factory.create({
 )
 .then( (dsApp) => _marchio.use(dsApp) )
 .then( () => _marchio.listen( PORT ) )
-.catch( function(err) { 
+.catch( (err) => { 
+    console.error(err); 
+}); 
     
 ```
 
@@ -370,6 +372,10 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 * * *
 
 ## Version History
+
+#### Version 0.1.9
+
+* Fixed cut off code in doc example
 
 #### Version 0.1.8
 
