@@ -98,7 +98,8 @@ factory.create({
         model: _testModel,
         post: true,
         get: true,
-        put: true
+        put: true,
+        del: true
     })
 )
 .then( (dsApp) => _marchio.use(dsApp) )
@@ -114,7 +115,9 @@ At the command line run:
 ```
 $ node index.js
 ```
-    
+   
+##### HTTP POST
+ 
 In a second terminal window run this command:
 
 ```
@@ -127,6 +130,8 @@ The response will look like this (but with a different _id number):
 {"email":"test@demo.com","status":"NEW","_id":"1234567890123456"}
 ```
 
+##### HTTP GET
+
 Copy the <b>_id</b> number and paste it into a command like this (replacing <i>1234567890123456</i> with whatever was returned by the POST command):
 
 ```
@@ -135,13 +140,27 @@ $ curl -X GET -H "Accept: applications/json" http://localhost:8080/user/12345678
 
 In a browser visit https://console.cloud.google.com/datastore/ and verify that the entity has been added.
 
+##### HTTP PUT
+
 Paste the id into another command like this (replacing 1234567890123456 with whatever was returned by the POST command):
 
-```$ curl -i -X PUT -H "Content-Type: application/json" -d '{"email":"test@demo.com", "status":"UPDATED"}' http://localhost:8080/user/1234567890123456```
+```
+$ curl -i -X PUT -H "Content-Type: application/json" -d '{"email":"test@demo.com", "status":"UPDATED"}' http://localhost:8080/user/1234567890123456
+```
     
 Run the GET command again to see the change to the status value.
 
 In a browser visit https://console.cloud.google.com/datastore/ and verify that the entity has been updated.
+
+##### HTTP DELETE
+
+To delete the entity run another command like this (pasting over the id with the one returned by the POST command):
+
+```
+$ curl -i -X DELETE -H "Content-Type: application/json" http://localhost:8080/user/1234567890123456
+```
+
+Now run the GET command again and see the the entity was not found. 
 
 Try the POST command a few more times, changing the email address value each time.
 
@@ -388,6 +407,10 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 * * *
 
 ## Version History
+
+#### Version 0.1.12
+
+* Upgraded marchio-datastore version and example to now support HTTP DELETE method
 
 #### Version 0.1.11
 

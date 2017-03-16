@@ -36,6 +36,12 @@
 
     In a browser visit https://console.cloud.google.com/datastore/ and verify that Entity has been updated.
 
+    Paste the id into the command below (replacing 123 ...) to delete the entity
+
+    curl -i -X DELETE -H "Content-Type: application/json" http://localhost:8080/user/1234567890123456
+
+    Visit the console again to verify that the entity has been deleted
+
     Try the POST command a few more times, changing the email address each time.
 
  */
@@ -71,7 +77,8 @@ factory.create({
         model: _testModel,
         post: true,
         get: true,
-        put: true
+        put: true,
+        del: true
     })
 )
 .then( (dsApp) => _marchio.use(dsApp) )
