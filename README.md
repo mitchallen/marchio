@@ -408,6 +408,10 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 
 ## Version History
 
+#### Version 0.1.13
+
+* Refactored placement of app creation
+
 #### Version 0.1.12
 
 * Upgraded marchio-datastore version and example to now support HTTP DELETE method
