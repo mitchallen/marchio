@@ -9,7 +9,6 @@
 "use strict";
 
 const express = require('express'),
-      app = express(),
       helmet = require('helmet'),
       killable = require('killable');
 
@@ -53,6 +52,8 @@ module.exports.create = (spec) => {
         // private 
         let _package = "marchio";
         var _server = null;
+
+        const app = express();
 
         function _log( msg ) {
             if(_verbose) {
