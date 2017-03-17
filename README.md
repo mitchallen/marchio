@@ -99,7 +99,8 @@ factory.create({
         post: true,
         get: true,
         put: true,
-        del: true
+        del: true,
+        patch: true
     })
 )
 .then( (dsApp) => _marchio.use(dsApp) )
@@ -151,6 +152,17 @@ $ curl -i -X PUT -H "Content-Type: application/json" -d '{"email":"test@demo.com
 Run the GET command again to see the change to the status value.
 
 In a browser visit https://console.cloud.google.com/datastore/ and verify that the entity has been updated.
+
+##### HTTP PATCH
+
+__PATCH__ is similar to __PUT__. You still need to include the id of the record in the URL. But the data you pass in is not a set of fields. Instead it's a set of instructions for how to patch the record. To patch a record it first has to retrieve it, patch it, then save it, requiring two trips to the database. 
+
+```
+curl -i -X PATCH -H "Content-Type: application/json" -d '[{"op":"replace","path":"/status","value":"PATCH THE STATUS"}]' http://localhost:8080/user/1234567890123456
+```
+
+Behind the scenes the the code uses __fast-json-patch__. Search for that on npm for more info how to apply patches.
+
 
 ##### HTTP DELETE
 
@@ -407,6 +419,10 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 * * *
 
 ## Version History
+
+#### Version 0.1.14
+
+* Upgraded marchio-datastore version and example to now support HTTP PATCH method
 
 #### Version 0.1.13
 

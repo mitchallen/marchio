@@ -36,6 +36,10 @@
 
     In a browser visit https://console.cloud.google.com/datastore/ and verify that Entity has been updated.
 
+    To patch the entity do the following (changing the URL id)
+
+    $ curl -i -X PATCH -H "Content-Type: application/json" -d '[{"op":"replace","path":"/status","value":"PATCH THE STATUS"}]' http://localhost:8080/user/1234567890123456
+
     Paste the id into the command below (replacing 123 ...) to delete the entity
 
     curl -i -X DELETE -H "Content-Type: application/json" http://localhost:8080/user/1234567890123456
@@ -78,7 +82,8 @@ factory.create({
         post: true,
         get: true,
         put: true,
-        del: true
+        del: true,
+        patch: true
     })
 )
 .then( (dsApp) => _marchio.use(dsApp) )
