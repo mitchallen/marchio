@@ -33,7 +33,7 @@ describe('module factory smoke test', () => {
         fields: {
             email:    { type: String, required: true },
             status:   { type: String, required: true, default: "NEW" },
-            // password: { type: String, select: false },  // select: false, exclude from query results
+            password: { type: String, select: false },  // select: false, exclude from query results
             // alpha:    { type: String, required: true, default: "AAA" },
             // beta :    { type: String, default: "BBB" },
         }
@@ -189,9 +189,9 @@ describe('module factory smoke test', () => {
                 get: true
             })
         )
-        .then( (dsPostRouter) => {
-            should.exist(dsPostRouter);
-            return _marchio.use(dsPostRouter);
+        .then( (dsApp) => {
+            should.exist(dsApp);
+            return _marchio.use(dsApp);
         })
         .then( () => _marchio.listen( { port: TEST_PORT } ) )
         .then( () => {
@@ -238,6 +238,246 @@ describe('module factory smoke test', () => {
         })
         .catch( function(err) { 
             console.error(err.message);
+            done(err);  // to pass on err, remove err (done() - no arguments)
+        });
+    });
+
+    it('datastore.put should succeed', done => {
+        _factory.create( {
+            verbose: false
+        })
+        .then( (obj) => _marchio = obj )
+        .then( () => 
+            datastore.create({
+                projectId: GOOGLE_TEST_PROJECT,
+                model: _testModel,
+                post: true,
+                get: true,
+                put: true
+            })
+        )
+        .then( (dsApp) => {
+            should.exist(dsApp);
+            return _marchio.use(dsApp);
+        })
+        .then( () => _marchio.listen( { port: TEST_PORT } ) )
+        .then( () => {
+
+            var testObject = {
+                email: "testput" + getRandomInt( 1000, 1000000) + "@smoketest.cloud",
+                password: "fubar"
+            };
+
+            // SETUP - need to post at least one record
+            request(_testHost)
+                .post(_postUrl)
+                .send(testObject)
+                .set('Content-Type', 'application/json')
+                .expect(201)
+                .end(function (err, res) {
+                    should.not.exist(err);
+                    should.exist(res);
+                    should.not.exist(err);
+                    // console.log(res.body);
+                    res.body.email.should.eql(testObject.email);
+                    res.body.status.should.eql("NEW");
+                    should.exist(res.body._id);
+                    // PUT
+                    var _recordId = res.body._id; 
+                    var _putUrl = `/${_testModel.name}/${_recordId}`;
+                    // console.log("PUT URL: ", _putUrl);
+                    request(_testHost)
+                        .put(_putUrl)
+                        // PROBLEM: hashed password is not included and Datastore doesn't do partial updates
+                        .send({ email: testObject.email, status: "UPDATED" })
+                        // .send({ status: "UPDATED" })
+                        .set('Content-Type', 'application/json')
+                        .expect(204)    // No content returned
+                        .end(function (err, res) {
+                            should.not.exist(err);
+                            // No content, nothing to verify
+                            var _getUrl = `/${_testModel.name}/${_recordId}`;
+                            // console.log("GET URL: ", _getUrl);
+                            request(_testHost)
+                                .get(_getUrl)
+                                // Get ALL fields, verify password intact.
+                                .query( { fields: 'email password status'} )
+                                .expect(200)
+                                .end(function (err, res) {
+                                    should.not.exist(err);
+                                    // console.log("RECORD: ", res.body);
+                                    res.body.email.should.eql(testObject.email);
+                                    // Should return password based on fields query
+                                    should.exist(res.body.password);
+                                    // In production the password would be hashed and would not match
+                                    res.body.password.should.eql(testObject.password);
+                                    res.body.status.should.eql("UPDATED");
+                                    should.exist(res.body._id);
+                                    done();;
+                                });
+                        });
+                });
+
+        })
+        .catch( function(err) { 
+            console.error(err); 
+            done(err);  // to pass on err, remove err (done() - no arguments)
+        });
+    });
+
+    it('datastore.delete should succeed', done => {
+        _factory.create( {
+            verbose: false
+        })
+        .then( (obj) => _marchio = obj )
+        .then( () => 
+            datastore.create({
+                projectId: GOOGLE_TEST_PROJECT,
+                model: _testModel,
+                post: true,
+                get: true,
+                del: true
+            })
+        )
+        .then( (dsApp) => {
+            should.exist(dsApp);
+            return _marchio.use(dsApp);
+        })
+        .then( () => _marchio.listen( { port: TEST_PORT } ) )
+        .then( () => {
+
+            var testObject = {
+                email: "test" + getRandomInt( 1000, 1000000) + "@smoketest.cloud",
+                password: "fubar"
+            };
+
+            // console.log(`TEST HOST: ${_testHost} `);
+
+            // SETUP - need to post at least one record
+            request(_testHost)
+                .post(_postUrl)
+                .send(testObject)
+                .set('Content-Type', 'application/json')
+                .expect(201)
+                .end(function (err, res) {
+                    should.not.exist(err);
+                    should.exist(res);
+                    should.not.exist(err);
+                    // console.log(res.body);
+                    res.body.email.should.eql(testObject.email);
+                    res.body.status.should.eql("NEW");
+                    should.exist(res.body._id);
+                    // DELETE
+                    var _recordId = res.body._id; 
+                    var _delUrl = `/${_testModel.name}/${_recordId}`;
+                    // console.log("DEL URL: ", _delUrl);
+                    request(_testHost)
+                        .del(_delUrl)
+                        .expect(200)
+                        .end(function (err, res) {
+                            should.not.exist(err);
+                            res.body.status.should.eql("OK");
+                            // GET (make sure it's gone - expect 404)
+                            var _getUrl = `/${_testModel.name}/${_recordId}`;
+                            // console.log("GET URL: ", _getUrl);
+                            request(_testHost)
+                                .get(_getUrl)
+                                .expect(404)
+                                .end(function (err, res) {
+                                    should.not.exist(err);
+                                    // console.log(res.body);
+                                    res.body.error.should.containEql('not found');
+                                    done();;
+                                });
+                        });
+                });
+
+        })
+        .catch( function(err) { 
+            console.error(err); 
+            done(err);  // to pass on err, remove err (done() - no arguments)
+        });
+    });
+
+    it('datastore.patch should succeed', done => {
+        _factory.create( {
+            verbose: false
+        })
+        .then( (obj) => _marchio = obj )
+        .then( () => 
+            datastore.create({
+                projectId: GOOGLE_TEST_PROJECT,
+                model: _testModel,
+                post: true,
+                get: true,
+                patch: true
+            })
+        )
+        .then( (dsApp) => {
+            should.exist(dsApp);
+            return _marchio.use(dsApp);
+        })
+        .then( () => _marchio.listen( { port: TEST_PORT } ) )
+        .then( () => {
+
+            var testObject = {
+                email: "testpatch" + getRandomInt( 1000, 1000000) + "@smoketest.cloud",
+                password: "fubar"
+            };
+
+            var patchStatus = "UPDATED PATCH STATUS",
+                testPatch = [
+                    // { "op": "remove", "path": "/password" }
+                    {"op": "replace", "path": "/status", "value": patchStatus }
+                ];
+
+            // SETUP - need to post at least one record
+            request(_testHost)
+                .post(_postUrl)
+                .send(testObject)
+                .set('Content-Type', 'application/json')
+                .expect(201)
+                .end(function (err, res) {
+                    should.not.exist(err);
+                    should.exist(res);
+                    should.not.exist(err);
+                    // console.log(res.body);
+                    res.body.email.should.eql(testObject.email);
+                    res.body.status.should.eql("NEW");
+                    should.exist(res.body._id);
+                    // PATCH
+                    var _recordId = res.body._id; 
+                    var _patchUrl = `/${_testModel.name}/${_recordId}`;
+                    // console.log("PATCH URL: ", _patchUrl);
+                    request(_testHost)
+                        .patch(_patchUrl)
+                        .send( testPatch )
+                        .set('Content-Type', 'application/json')
+                        .expect(204)  
+                        .end(function (err, res) {
+                            should.not.exist(err);
+                            // GET
+                            var _getUrl = `/${_testModel.name}/${_recordId}`;
+                            // console.log("GET URL: ", _getUrl);
+                            request(_testHost)
+                                .get(_getUrl)
+                                .expect(200)
+                                .end(function (err, res) {
+                                    should.not.exist(err);
+                                    // console.log("RECORD: ", res.body);
+                                    res.body.email.should.eql(testObject.email);
+                                    // // Should not return password
+                                    should.not.exist(res.body.password);
+                                    res.body.status.should.eql(patchStatus);
+                                    should.exist(res.body._id);
+                                    done();;
+                                });
+                        });
+                });
+
+        })
+        .catch( function(err) { 
+            console.error(err); 
             done(err);  // to pass on err, remove err (done() - no arguments)
         });
     });

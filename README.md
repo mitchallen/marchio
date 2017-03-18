@@ -422,6 +422,11 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 
 #### Version 0.1.15
 
+* Upgraded marchio-datastore version
+* Added smoke tests for PUT, DELETE and PATCH
+
+#### Version 0.1.15
+
 * Upgraded marchio-datastore version and example to now support partial HTTP PUT transactions
 
 #### Version 0.1.14
