@@ -420,6 +420,10 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 
 ## Version History
 
+#### Version 0.1.15
+
+* Upgraded marchio-datastore version and example to now support partial HTTP PUT transactions
+
 #### Version 0.1.14
 
 * Upgraded marchio-datastore version and example to now support HTTP PATCH method
