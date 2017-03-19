@@ -376,7 +376,6 @@ describe('module factory smoke test', () => {
                         .expect(200)
                         .end(function (err, res) {
                             should.not.exist(err);
-                            res.body.status.should.eql("OK");
                             // GET (make sure it's gone - expect 404)
                             var _getUrl = `/${_testModel.name}/${_recordId}`;
                             // console.log("GET URL: ", _getUrl);
