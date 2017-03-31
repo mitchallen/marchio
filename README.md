@@ -198,7 +198,7 @@ Module
 * [marchio](#module_marchio)
     * [.package()](#module_marchio+package)
     * [.health()](#module_marchio+health) ⇒ <code>Promise</code>
-    * [.use(middleware)](#module_marchio+use) ⇒ <code>Promise</code>
+    * [.use([path], middleware)](#module_marchio+use) ⇒ <code>Promise</code>
     * [.listen(port)](#module_marchio+listen) ⇒ <code>Promise</code>
     * [.close()](#module_marchio+close) ⇒ <code>Promise</code>
     * [.kill()](#module_marchio+kill) ⇒ <code>Promise</code>
@@ -232,13 +232,14 @@ factory.create()
 ```
 <a name="module_marchio+use"></a>
 
-### marchio.use(middleware) ⇒ <code>Promise</code>
+### marchio.use([path], middleware) ⇒ <code>Promise</code>
 Use middleware function
 
 **Kind**: instance method of <code>[marchio](#module_marchio)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
+| [path] | <code>String</code> | Optional base url (for example: '/api') |
 | middleware | <code>middleware</code> | ExpressJS middleware function, app, or router |
 
 **Example** *(Usage Example)*  
@@ -273,6 +274,42 @@ factory.create({})
     })
 )
 .then( (dsApp) => _marchio.use(dsApp) )
+.catch( function(err) { 
+    console.error(err); 
+});
+```
+**Example** *(Path Example)*  
+```js
+// $ npm install --save marchio-datastore
+
+"use strict";
+
+var factory = require("marchio"),
+    datastore = require('marchio-datastore');
+
+var GOOGLE_PROJECT_ID = process.env.MARCHIO_GOOGLE_PROJECT_ID;
+
+var _testModel = {
+    name: 'user',
+    fields: {
+        email:    { type: String, required: true },
+        status:   { type: String, required: true, default: "NEW" }
+    }
+};
+
+var _marchio = null;
+
+factory.create({})
+.then( (obj) => _marchio = obj )
+.then( () => 
+    datastore.create({
+        projectId: GOOGLE_PROJECT_ID,
+        model: _testModel,
+        post: true,
+        get: true
+    })
+)
+.then( (dsApp) => _marchio.use( '/api', dsApp ) )
 .catch( function(err) { 
     console.error(err); 
 });
@@ -387,7 +424,6 @@ factory.create({})
 });
 ```
 
-
 * * *
 
 ## Testing
@@ -419,6 +455,10 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 * * *
 
 ## Version History
+
+#### Version 0.1.19
+
+* .use method now supports path parameter
 
 #### Version 0.1.18
 

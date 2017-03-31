@@ -1,15 +1,14 @@
 {
-  "name": "datastore",
+  "name": "prefix",
   "version": "1.0.0",
-  "description": "Marchio datastore demo",
+  "description": "marchio prefix example",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Mitch Allen",
+  "author": "Mitch Allen (http://mitchallen.com)",
   "license": "MIT",
   "dependencies": {
-    "marchio": "^0.1.18",
-    "marchio-datastore": "^0.1.1e"
+    "marchio-datastore": "^0.1.13"
   }
 }

@@ -97,6 +97,7 @@ module.exports.create = (spec) => {
               * @function
               * @instance
               * @memberof module:marchio
+              * @param {String} [path] Optional base url (for example: '/api')
               * @param {middleware} middleware ExpressJS middleware function, app, or router
               * @returns {Promise}
               * @example <caption>Usage Example</caption>
@@ -133,6 +134,40 @@ module.exports.create = (spec) => {
               * .catch( function(err) { 
               *     console.error(err); 
               * });
+              * @example <caption>Path Example</caption>
+              * // $ npm install --save marchio-datastore
+              *
+              * "use strict";
+              *
+              * var factory = require("marchio"),
+              *     datastore = require('marchio-datastore');
+              *
+              * var GOOGLE_PROJECT_ID = process.env.MARCHIO_GOOGLE_PROJECT_ID;
+              *
+              * var _testModel = {
+              *     name: 'user',
+              *     fields: {
+              *         email:    { type: String, required: true },
+              *         status:   { type: String, required: true, default: "NEW" }
+              *     }
+              * };
+              *
+              * var _marchio = null;
+              *
+              * factory.create({})
+              * .then( (obj) => _marchio = obj )
+              * .then( () => 
+              *     datastore.create({
+              *         projectId: GOOGLE_PROJECT_ID,
+              *         model: _testModel,
+              *         post: true,
+              *         get: true
+              *     })
+              * )
+              * .then( (dsApp) => _marchio.use( '/api', dsApp ) )
+              * .catch( function(err) { 
+              *     console.error(err); 
+              * });
             */
             use: function( middleware ) {
 
@@ -142,8 +177,12 @@ module.exports.create = (spec) => {
                         reject(new Error("marchio.use requires middleware"));
                     }
 
-                    app.use( middleware );
-
+                    if( typeof arguments[0] === 'string' ) {
+                      // app.use( '/path', ... )
+                      app.use( arguments[0], Array.prototype.slice.call(arguments, 1) );
+                    } else {
+                      app.use( middleware );
+                    }
                     resolve();
                 });
             },
