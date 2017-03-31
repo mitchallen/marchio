@@ -55,8 +55,8 @@
 
 "use strict";
  
-// var factory = require("marchio"),
-var factory = require("../../modules/index"),
+var factory = require("marchio"),
+// var factory = require("../../modules/index"),
     datastore = require('marchio-datastore');
  
 const GOOGLE_PROJECT_ID = process.env.MARCHIO_GOOGLE_PROJECT_ID,

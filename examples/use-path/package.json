@@ -1,7 +1,7 @@
 {
-  "name": "prefix",
+  "name": "use-path",
   "version": "1.0.0",
-  "description": "marchio prefix example",
+  "description": "marchio use path example",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,6 +9,7 @@
   "author": "Mitch Allen (http://mitchallen.com)",
   "license": "MIT",
   "dependencies": {
+    "marchio": "^0.1.19",
     "marchio-datastore": "^0.1.13"
   }
 }
